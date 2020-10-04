@@ -21,8 +21,8 @@ function wcm_Add_My_Admin_Link()
 
 add_action( 'admin_menu', 'wcm_Add_My_Admin_Link' );
 
-/* after an order has been processed, we will use the  'woocommerce_thankyou' hook, to add our function, to send the data */
-add_action('woocommerce_thankyou', 'wdm_send_order_to_ext'); 
+/* after an order has been processed, we will use the  'woocommerce_order_status_completed' hook, to add our function, to send the data */
+add_action('woocommerce_order_status_completed', 'wdm_send_order_to_ext'); 
 function wdm_send_order_to_ext( $order_id ){
     // get order object and order details
     $order = new WC_Order( $order_id );
@@ -84,6 +84,7 @@ require_once(plugin_dir_path(__FILE__).'include/nusoap.php');
         if ($ini['Ok'] == true and $ini['CodigoError'] == 0) {
     
             $albaran = 0;
+            $referencia = $order_id;
             $acode = '48H';
             $dnombre = $name;  
             $ddes = $adress;    
@@ -96,7 +97,7 @@ require_once(plugin_dir_path(__FILE__).'include/nusoap.php');
         $param1=array('_Usuario'=>$usuario, '_Clave' => $pass, '_AlbaranNumero' => $albaran, 
         '_ArticuloCodigo' => $acode, '_Fecha' => $salida, 
         '_DNombre' => $dnombre, '_DDireccion' => $ddes, '_DPoblacion' => $dpob, 
-        '_DCodigoPostal' => $codep,
+        '_DCodigoPostal' => $codep, '_DReferencia1' => $referencia,
         '_Bultos' => $bultos, '_Peso' => $peso);
     
         $orden = $client->call('GrabarEnvio', $param1);
